@@ -1,11 +1,7 @@
 """
 Module to assist in verifying a signed header.
 """
-import six
-
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, hmac, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.exceptions import InvalidSignature
 
 from base64 import b64decode
@@ -45,7 +41,7 @@ class Verifier(Signer):
         elif self.sign_algorithm == 'hmac':
             h = self._sign_hmac(data)
             s = b64decode(signature)
-            return (h == s)
+            return h == s
 
         else:
             raise HttpSigException("Unsupported algorithm.")

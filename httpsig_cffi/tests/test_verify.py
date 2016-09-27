@@ -3,11 +3,11 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-import json
 import unittest
 
 from httpsig_cffi.sign import HeaderSigner, Signer
 from httpsig_cffi.verify import HeaderVerifier, Verifier
+
 
 class BaseTestCase(unittest.TestCase):
     def _parse_auth(self, auth):
@@ -135,6 +135,7 @@ class TestVerifyHMACSHA256(TestVerifyHMACSHA1):
         super(TestVerifyHMACSHA256, self).setUp()
         self.algorithm = "hmac-sha256"
 
+
 class TestVerifyHMACSHA512(TestVerifyHMACSHA1):
     def setUp(self):
         super(TestVerifyHMACSHA512, self).setUp()
@@ -154,10 +155,12 @@ class TestVerifyRSASHA1(TestVerifyHMACSHA1):
         self.sign_secret = private_key
         self.verify_secret = public_key
 
+
 class TestVerifyRSASHA256(TestVerifyRSASHA1):
     def setUp(self):
         super(TestVerifyRSASHA256, self).setUp()
         self.algorithm = "rsa-sha256"
+
 
 class TestVerifyRSASHA512(TestVerifyRSASHA1):
     def setUp(self):

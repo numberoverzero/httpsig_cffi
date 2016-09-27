@@ -1,9 +1,6 @@
-import base64
-import six
-
 from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import hashes, hmac, serialization
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import hmac, serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 
 from .utils import *
 
@@ -80,7 +77,7 @@ class Signer(object):
 
 
 class HeaderSigner(Signer):
-    '''
+    """
     Generic object that will sign headers as a dictionary using the http-signature scheme.
     https://github.com/joyent/node-http-signature/blob/master/http_signing.md
 
@@ -88,7 +85,7 @@ class HeaderSigner(Signer):
     :arg secret:    a PEM-encoded RSA private key or an HMAC secret (must match the algorithm)
     :arg algorithm: one of the six specified algorithms
     :arg headers:   a list of http headers to be included in the signing string, defaulting to ['date'].
-    '''
+    """
     def __init__(self, key_id, secret, algorithm=None, headers=None):
         if algorithm is None:
             algorithm = DEFAULT_SIGN_ALGORITHM
