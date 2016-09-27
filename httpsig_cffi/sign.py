@@ -15,7 +15,7 @@ class Signer(object):
 
     Password-protected keyfiles are not supported.
     """
-    def __init__(self, secret, algorithm=None):
+    def __init__(self, secret, algorithm=None, password=None):
         if algorithm is None:
             algorithm = DEFAULT_SIGN_ALGORITHM
 
@@ -32,7 +32,7 @@ class Signer(object):
             try:
                 self._rsahash = HASHES[self.hash_algorithm]
                 self._rsa_private = serialization.load_pem_private_key(secret,
-                                                                       None,
+                                                                       password,
                                                                        backend=default_backend())
                 self._rsa_public = self._rsa_private.public_key()
             except ValueError as e:
@@ -85,12 +85,13 @@ class HeaderSigner(Signer):
     :arg secret:    a PEM-encoded RSA private key or an HMAC secret (must match the algorithm)
     :arg algorithm: one of the six specified algorithms
     :arg headers:   a list of http headers to be included in the signing string, defaulting to ['date'].
+    :arg password:  password for an encrypted private key, defaulting to None.
     """
-    def __init__(self, key_id, secret, algorithm=None, headers=None):
+    def __init__(self, key_id, secret, algorithm=None, headers=None, password=None):
         if algorithm is None:
             algorithm = DEFAULT_SIGN_ALGORITHM
 
-        super(HeaderSigner, self).__init__(secret=secret, algorithm=algorithm)
+        super(HeaderSigner, self).__init__(secret=secret, algorithm=algorithm, password=password)
         self.headers = headers or ['date']
         self.signature_template = build_signature_template(key_id, algorithm, headers)
 

@@ -36,6 +36,29 @@ class TestSign(unittest.TestCase):
         self.assertEqual(params['algorithm'], 'rsa-sha256')
         self.assertEqual(params['signature'], 'ATp0r26dbMIxOopqw0OfABDT7CKMIoENumuruOtarj8n/97Q3htHFYpH8yOSQk3Z5zh8UxUym6FYTb5+A0Nz3NRsXJibnYi7brE/4tx5But9kkFGzG+xpUmimN4c3TMN7OFH//+r8hBf7BT9/GmHDUVZT2JzWGLZES2xDOUuMtA=')
 
+    def test_password(self):
+        """Identical to test_default, but with a password on the private key."""
+        key_path = os.path.join(os.path.dirname(__file__), 'rsa_private_pass.pem')
+        key = open(key_path, 'rb').read()
+        password = b"hunter2"
+
+        hs = sign.HeaderSigner(key_id='Test', secret=key, password=password)
+        unsigned = {
+            'Date': 'Thu, 05 Jan 2012 21:31:40 GMT'
+        }
+        signed = hs.sign(unsigned)
+        self.assertIn('Date', signed)
+        self.assertEqual(unsigned['Date'], signed['Date'])
+        self.assertIn('Authorization', signed)
+        auth = parse_authorization_header(signed['authorization'])
+        params = auth[1]
+        self.assertIn('keyId', params)
+        self.assertIn('algorithm', params)
+        self.assertIn('signature', params)
+        self.assertEqual(params['keyId'], 'Test')
+        self.assertEqual(params['algorithm'], 'rsa-sha256')
+        self.assertEqual(params['signature'], 'ATp0r26dbMIxOopqw0OfABDT7CKMIoENumuruOtarj8n/97Q3htHFYpH8yOSQk3Z5zh8UxUym6FYTb5+A0Nz3NRsXJibnYi7brE/4tx5But9kkFGzG+xpUmimN4c3TMN7OFH//+r8hBf7BT9/GmHDUVZT2JzWGLZES2xDOUuMtA=')
+
     def test_all(self):
         hs = sign.HeaderSigner(key_id='Test', secret=self.key, headers=[
             '(request-target)',
